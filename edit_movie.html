@@ -1,0 +1,144 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Movie</title>
+    <link rel="stylesheet" href="{% static 'css/admin_dashboard.css' %}">
+    <style>
+        /* Additional CSS for the form */
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input, select, textarea, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .main-content h2 {
+            margin-bottom: 20px;
+        }
+
+        img {
+            max-width: 100px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Admin Dashboard</h1>
+        <nav>
+            <ul>
+                <li><a href="{% url 'admin_dashboard' %}">Dashboard</a></li>
+                <li><a href="{% url 'view_customers' %}">Manage Users</a></li>
+                <li><a href="{% url 'list_categories' %}">Categories</a></li>
+                <li><a href="{% url 'list_movies' %}">Movies</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="sidebar">
+        <ul>
+            <li class="{% if request.path == '/admin_dashboard/' %}active{% endif %}">
+                <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+            </li>
+            <li class="{% if request.path == '/view-customers/' %}active{% endif %}">
+                <a href="{% url 'view_customers' %}">Manage Users</a></li>
+            <li class="{% if request.path == '/categories/' %}active{% endif %}">
+                <a href="{% url 'list_categories' %}">Categories</a>
+            </li>
+            <li class="{% if request.path == '/list-movies/' %}active{% endif %}">
+                <a href="{% url 'list_movies' %}">Movies</a>
+            </li>
+            <li><a href="#">Orders</a></li>
+            <li><a href="#">Wishlist</a></li>
+            <li><a href="#">Payment</a></li>
+        </ul>
+    </div>
+    <div class="main-content">
+        <h2>Edit Movie</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" id="title" name="title" value="{{ movie.title }}" required>
+            </div>
+            <div class="form-group">
+                <label for="category">Category</label>
+                <select id="category" name="category" required>
+                    {% for category in categories %}
+                    <option value="{{ category.id }}" {% if category.id == movie.category.id %}selected{% endif %}>
+                        {{ category.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="release_date">Release Date</label>
+                <input type="date" id="release_date" name="release_date" value="{{ movie.release_date }}" required>
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" required>{{ movie.description }}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="poster">Poster Image</label>
+                <input type="file" id="poster" name="poster">
+                {% if movie.poster %}
+                <img src="{{ movie.poster.url }}" alt="Poster">
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="director">Director</label>
+                <input type="text" id="director" name="director" value="{{ movie.director }}" required>
+            </div>
+            <div class="form-group">
+                <label for="duration">Duration</label>
+                <input type="time" id="duration" name="duration" value="{{ movie.duration|time:'H:i' }}" required>
+            </div>
+            <div class="form-group">
+                <label for="price">Price</label>
+                <input type="number" id="price" name="price" value="{{ movie.price }}" step="0.01" required>
+            </div>
+            <button type="submit" class="btn btn-update">Update Movie</button>
+        </form>
+    </div>
+</body>
+</html>

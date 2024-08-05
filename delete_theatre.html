@@ -1,0 +1,23 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Delete</title>
+    <link rel="stylesheet" href="{% static 'css/admin_dashboard.css' %}">
+</head>
+<body>
+    <header>
+        <h1>Confirm Deletion</h1>
+    </header>
+    <div class="main-content">
+        <p>Are you sure you want to delete the theater "{{ theatre.name }}"?</p>
+        <form method="post">
+            {% csrf_token %}
+            <input type="submit" value="Delete">
+        </form>
+        <a href="{% url 'list_theatres' %}">Cancel</a>
+    </div>
+</body>
+</html>

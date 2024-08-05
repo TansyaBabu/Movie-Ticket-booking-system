@@ -1,0 +1,186 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Theatre</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+        .sidebar {
+            width: 200px;
+            background-color: #2c3e50;
+            padding: 20px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .sidebar ul li {
+            margin: 20px 0;
+        }
+        .sidebar ul li a {
+            color: #ecf0f1;
+            text-decoration: none;
+            font-size: 18px;
+        }
+        .sidebar ul li a:hover {
+            text-decoration: underline;
+        }
+        header {
+            background-color: #34495e;
+            color: white;
+            padding: 20px 40px;
+            position: fixed;
+            top: 0;
+            width: calc(100% - 200px); /* Adjusted for sidebar width */
+            left: 200px; /* Adjusted for sidebar width */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        header nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+        header nav ul li {
+            margin-left: 20px;
+        }
+        header nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+        }
+        header nav ul li a:hover {
+            text-decoration: underline;
+        }
+        .main-content {
+            margin-left: 200px; /* Sidebar width */
+            margin-top: 80px; /* Space for fixed header */
+            padding: 20px;
+            flex-grow: 1;
+        }
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        .form-container h2 {
+            margin-top: 0;
+            font-size: 28px;
+        }
+        .form-container label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .form-container input[type="text"],
+        .form-container input[type="number"],
+        .form-container select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box; /* Ensures padding does not affect width */
+        }
+        .form-container button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .form-container button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Admin Dashboard</h1>
+        <nav>
+            <ul>
+                <li><a href="{% url 'admin_dashboard' %}">Dashboard</a></li>
+                <li><a href="{% url 'view_customers' %}">Manage Users</a></li>
+                <li><a href="{% url 'list_categories' %}">Categories</a></li>
+                <li><a href="{% url 'list_movies' %}">Movies</a></li>
+                <li><a href="{% url 'list_theatres' %}">Theatres</a></li>
+                <!-- Other links... -->
+            </ul>
+        </nav>
+    </header>
+    <div class="sidebar">
+        <ul>
+            <li class="{% if request.path == '/admin_dashboard/' %}active{% endif %}">
+                <a href="{% url 'admin_dashboard' %}">Dashboard</a>
+            </li>
+            <li class="{% if request.path == '/view-customers/' %}active{% endif %}">
+                <a href="{% url 'view_customers' %}">Manage Users</a>
+            </li>
+            <li class="{% if request.path == '/categories/' %}active{% endif %}">
+                <a href="{% url 'list_categories' %}">Categories</a>
+            </li>
+            <li class="{% if request.path == '/list-movies/' %}active{% endif %}">
+                <a href="{% url 'list_movies' %}">Movies</a>
+            </li>
+            <li class="{% if request.path == '/list-theatres/' %}active{% endif %}">
+                <a href="{% url 'list_theatres' %}">Theatres</a>
+            </li>
+            <li><a href="#">Orders</a></li>
+            <li><a href="#">Payment</a></li>
+            <!-- Other links... -->
+        </ul>
+    </div>
+    <div class="main-content">
+        <div class="form-container">
+            <h2>Add Theatre</h2>
+            <form method="post">
+                {% csrf_token %}
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required><br>
+
+                <label for="location">Location:</label>
+                <input type="text" id="location" name="location" required><br>
+
+                <label for="total_seats">Total Seats:</label>
+                <input type="number" id="total_seats" name="total_seats" required><br>
+
+                <label for="theatre_owner">Owner:</label>
+                <select id="theatre_owner" name="theatre_owner" required>
+                    {% for owner in owners %}
+                        <option value="{{ owner.id }}">{{ owner.username }}</option>
+                    {% endfor %}
+                </select><br>
+
+                <button type="submit">Add Theatre</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
