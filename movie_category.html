@@ -1,0 +1,226 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ category }} Movies</title>
+    <link rel="stylesheet" href="{% static 'css/movie_category.css' %}">
+    <style>
+        /* movie_category.css */
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background-color: #f4f4f4;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #333;
+            padding: 10px 20px;
+            width: 100%;
+        }
+
+        .navbar .logo {
+            color: white;
+            font-size: 20px;
+            text-decoration: none;
+            margin-right: 50px;
+        }
+
+        .navbar ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            gap: 15px;
+        }
+
+        .navbar ul li {
+            position: relative;
+        }
+
+        .navbar ul li a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 12px;
+            transition: background-color 0.3s;
+        }
+
+        .navbar ul li a:hover {
+            background-color: #575757;
+            border-radius: 4px;
+        }
+
+        .navbar ul li .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #333;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+
+        .navbar ul li .dropdown-content a {
+            color: white;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .navbar ul li .dropdown-content a:hover {
+            background-color: #575757;
+        }
+
+        .navbar ul li:hover .dropdown-content {
+            display: block;
+        }
+
+        .main-content {
+            padding: 20px;
+            text-align: center;
+            background-color: #fff;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .main-content h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .main-content ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .main-content ul li {
+            background-color: #fff;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            text-align: left;
+        }
+
+        .main-content ul li img {
+            max-width: 150px;
+            max-height: 200px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .main-content ul li .movie-info {
+            flex: 1;
+        }
+
+        .main-content ul li .movie-title {
+            font-weight: bold;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .main-content ul li .movie-release-date {
+            font-size: 14px;
+            color: #777;
+            margin: 5px 0;
+        }
+
+        .main-content ul li .movie-description {
+            font-size: 14px;
+            color: #666;
+            margin: 10px 0;
+        }
+
+        .main-content ul li .movie-details {
+            font-size: 12px;
+            color: #888;
+            margin-top: 10px;
+        }
+
+        .booking-button-container {
+            margin-top: 15px;
+        }
+
+        .booking-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4CAF50; /* Green background */
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .booking-button:hover {
+            background-color: #45a049; /* Darker green on hover */
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="navbar">
+            <a href="#" class="logo">MyLogo</a>
+            <ul>
+                <li><a href="{% url 'user_dashboard' %}">Home</a></li>
+                <li>
+                    <a href="{% url 'user_profile' %}">My Account</a>
+                    <div class="dropdown-content">
+                        <a href="{% url 'user_profile' %}">Profile</a>
+                        <a href="">Contact Us</a>
+                        <a href="">Logout</a>
+                    </div>
+                </li>
+                <li><a href="#">Movies</a>
+                    <div class="dropdown-content">
+                        <a href="{% url 'movie_category' category='Comedy' %}">Comedy</a>
+                        <a href="{% url 'movie_category' category='Horror' %}">Horror</a>
+                        <a href="{% url 'movie_category' category='Thriller' %}">Thriller</a>
+                        <a href="{% url 'movie_category' category='Romantic' %}">Romantic</a>
+                        <a href="{% url 'movie_category' category='Action' %}">Action</a>
+                        <a href="{% url 'movie_category' category='Crime' %}">Crime</a>
+                    </div>
+                </li>
+                <li><a href="#">Seat Selection</a></li>
+                <li><a href="#">Bookings</a></li>
+                <li><a href="#">Payment</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <div class="main-content">
+        <h1>{{ category }} Movies</h1>
+        <ul>
+            {% for movie in movies %}
+                <li>
+                    <img src="{{ movie.poster.url }}" alt="{{ movie.title }}">
+                    <div class="movie-info">
+                        <div class="movie-title">ID: {{ movie.id }} - {{ movie.title }}</div>
+                        <div class="movie-release-date">Release Date: {{ movie.release_date }}</div>
+                        <div class="movie-description">{{ movie.description }}</div>
+                        <div class="movie-details">
+                            Director: {{ movie.director }}<br>
+                            Duration: {{ movie.duration }} minutes<br>
+                            Price: ${{ movie.price }}
+                        </div>
+                        <div class="booking-button-container">
+                            <a href="{% url 'user_theatre_list' %}" class="booking-button">Book Tickets</a>
+                        </div>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>

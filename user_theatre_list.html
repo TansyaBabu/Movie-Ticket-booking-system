@@ -1,0 +1,107 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theatre List</title>
+    <link rel="stylesheet" href="{% static 'css/user_styles.css' %}"> <!-- Include user-specific CSS -->
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #2c3e50;
+    color: white;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    margin: 0;
+}
+
+header nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+header nav ul li {
+    margin-left: 20px;
+}
+
+header nav ul li a {
+    color: white;
+    text-decoration: none;
+}
+
+header nav ul li a:hover {
+    text-decoration: underline;
+}
+
+.main-content {
+    padding: 20px;
+}
+
+.theatre-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.theatre-table, th, td {
+    border: 1px solid #ddd;
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Theatre List</h1>
+        <nav>
+            <ul>
+                <li><a href="{% url 'user_dashboard' %}">Dashboard</a></li>
+                <li><a href="{% url 'contact' %}">Contact</a></li>
+                <!-- Other user navigation links -->
+            </ul>
+        </nav>
+    </header>
+    <div class="main-content">
+        <h2>Available Theatres</h2>
+        <table class="theatre-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Location</th>
+                    <th>Total Seats</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for theatre in theatres %}
+                <tr>
+                    <td>{{ theatre.name }}</td>
+                    <td>{{ theatre.location }}</td>
+                    <td>{{ theatre.total_seats }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+    </div>
+</body>
+</html>
