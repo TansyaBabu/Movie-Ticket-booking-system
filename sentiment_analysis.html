@@ -1,0 +1,103 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentiment Analysis</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        .main-content {
+            max-width: 800px;
+            margin: auto;
+            text-align: center;
+        }
+        #sentimentChart {
+            width: 100% !important;
+            height: 400px !important; /* Adjust as needed */
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-content">
+        <h2>Feedback Sentiment Analysis</h2>
+        
+        <canvas id="sentimentChart"></canvas>
+        <script>
+            const ctx = document.getElementById('sentimentChart').getContext('2d');
+            const sentimentChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: {{ labels|safe }},
+                    datasets: [{
+                        label: 'Sentiment Distribution',
+                        data: {{ data|safe }},
+                        backgroundColor: [
+                            'rgba(75, 192, 192, 0.6)',
+                            'rgba(255, 99, 132, 0.6)',
+                            'rgba(255, 206, 86, 0.6)',
+                        ],
+                        borderColor: [
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(255, 206, 86, 1)',
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false, // Allow chart to fill the container
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Sentiment Analysis Results'
+                        }
+                    }
+                }
+            });
+        </script>
+
+        <h3>Feedback Details</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Feedback</th>
+                    <th>Sentiment</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for feedback in feedback_list %}
+                <tr>
+                    <td>{{ feedback.user }}</td>  <!-- Adjust this line -->
+                    <td>{{ feedback.feedback_text }}</td>
+                    <td>{{ feedback.sentiment }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
