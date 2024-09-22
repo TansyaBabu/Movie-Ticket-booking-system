@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        .section h2 {
+            margin: 0 0 10px;
+        }
+        .section p {
+            margin: 0;
+        }
+        .paynow-btn {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #27ae60;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Payment Details</h1>
+        <div class="section">
+            <h2>Selected Seats:</h2>
+            <p id="seatsList"></p>
+        </div>
+        <div class="section">
+            <h2>Total Amount:</h2>
+            <p id="totalAmount"></p>
+        </div>
+        <button class="paynow-btn" id="payNow">Pay Now</button>
+    </div>
+
+    <script>
+        // Sample data (replace with actual data from server)
+        const selectedSeats = "{{ selectedSeats }}".split(',');
+        const totalAmount = "{{ totalAmount }}";
+
+        // Display selected seats and total amount
+        document.getElementById('seatsList').textContent = selectedSeats.join(', ');
+        document.getElementById('totalAmount').textContent = `Rs. ${totalAmount}`;
+
+        document.getElementById('payNow').onclick = function () {
+            // Create a Razorpay payment instance
+            var options = {
+                "key": "rzp_test_AnXj68fT4zKwe0", // Replace with your Razorpay key
+                "amount": totalAmount * 100, // Amount in paise
+                "currency": "INR",
+                "name": "Movie Ticket Booking",
+                "description": "Payment for movie tickets",
+                "handler": function (response) {
+                    // Send payment ID and other details to your server for verification
+                    fetch('/payment_success/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}' // Ensure CSRF token is included
+                        },
+                        body: JSON.stringify({
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            // You may need to send additional data, like booking details
+                        })
+                    }).then(function() {
+                        // On success, the server redirects to the booking confirmation page
+                        window.location.href = "/booking_confirmation/" + response.razorpay_payment_id + "/";
+                    });
+                },
+                "prefill": {
+                    "name": "",
+                    "email": "",
+                    "contact": ""
+                },
+                "theme": {
+                    "color": "#27ae60"
+                }
+            };
+
+            var rzp1 = new Razorpay(options);
+            rzp1.open();
+        }
+    </script>
+</body>
+</html>
