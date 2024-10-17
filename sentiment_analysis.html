@@ -4,100 +4,143 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sentiment Analysis</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Feedback Sentiment Analysis</title>
     <style>
+        /* General Styles */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
         }
+
         .main-content {
-            max-width: 800px;
-            margin: auto;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 50px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #ca2e2e;
+            font-size: 24px;
             text-align: center;
+            margin-bottom: 20px;
         }
-        #sentimentChart {
-            width: 100% !important;
-            height: 400px !important; /* Adjust as needed */
-        }
+
+        /* Styles for the table */
         table {
             width: 100%;
             border-collapse: collapse;
+            background-color: #fff;
             margin-top: 20px;
         }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
+
+        table th, table td {
+            padding: 12px;
             text-align: left;
+            border-bottom: 1px solid #ddd;
         }
-        th {
-            background-color: #f2f2f2;
+
+        table th {
+            background-color: #f4f4f4;
+            font-weight: bold;
+            color: #333;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        table tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .positive {
+            color: #28a745; /* Green for positive sentiment */
+            font-weight: bold;
+        }
+
+        .negative {
+            color: #dc3545; /* Red for negative sentiment */
+            font-weight: bold;
+        }
+
+        .neutral {
+            color: #6c757d; /* Grey for neutral sentiment */
+            font-weight: bold;
+        }
+
+        /* Styles for the chart container */
+        .chart-container {
+            margin-top: 40px;
+            text-align: center;
+        }
+        
+        #sentimentPieChart {
+            max-width: 600px;
+            margin: 0 auto;
         }
     </style>
 </head>
 <body>
     <div class="main-content">
         <h2>Feedback Sentiment Analysis</h2>
-        
-        <canvas id="sentimentChart"></canvas>
-        <script>
-            const ctx = document.getElementById('sentimentChart').getContext('2d');
-            const sentimentChart = new Chart(ctx, {
-                type: 'pie',
-                data: {
-                    labels: {{ labels|safe }},
-                    datasets: [{
-                        label: 'Sentiment Distribution',
-                        data: {{ data|safe }},
-                        backgroundColor: [
-                            'rgba(75, 192, 192, 0.6)',
-                            'rgba(255, 99, 132, 0.6)',
-                            'rgba(255, 206, 86, 0.6)',
-                        ],
-                        borderColor: [
-                            'rgba(75, 192, 192, 1)',
-                            'rgba(255, 99, 132, 1)',
-                            'rgba(255, 206, 86, 1)',
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false, // Allow chart to fill the container
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                        },
-                        title: {
-                            display: true,
-                            text: 'Sentiment Analysis Results'
-                        }
-                    }
-                }
-            });
-        </script>
 
-        <h3>Feedback Details</h3>
+        <!-- Table displaying feedback and sentiments -->
         <table>
             <thead>
                 <tr>
-                    <th>User</th>
                     <th>Feedback</th>
                     <th>Sentiment</th>
                 </tr>
             </thead>
             <tbody>
-                {% for feedback in feedback_list %}
-                <tr>
-                    <td>{{ feedback.user }}</td>  <!-- Adjust this line -->
-                    <td>{{ feedback.feedback_text }}</td>
-                    <td>{{ feedback.sentiment }}</td>
-                </tr>
+                {% for result in analysis_results %}
+                    <tr>
+                        <td>{{ result.feedback_text }}</td>
+                        <td class="{% if result.sentiment == 'Positive' %}positive{% elif result.sentiment == 'Negative' %}negative{% else %}neutral{% endif %}">
+                            {{ result.sentiment }}
+                        </td>
+                    </tr>
                 {% endfor %}
             </tbody>
         </table>
+
+        <!-- Container for the Pie Chart -->
+        <div class="chart-container">
+            <canvas id="sentimentPieChart"></canvas>
+        </div>
     </div>
+
+    <!-- Chart.js Script -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctxPie = document.getElementById('sentimentPieChart').getContext('2d');
+        const sentimentPieChart = new Chart(ctxPie, {
+            type: 'pie',
+            data: {
+                labels: ['Positive', 'Neutral', 'Negative'],
+                datasets: [{
+                    label: 'Sentiment Distribution',
+                    data: [60, 25, 15], // Replace with your actual data
+                    backgroundColor: [
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 99, 132, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 99, 132, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+        });
+    </script>
 </body>
 </html>
