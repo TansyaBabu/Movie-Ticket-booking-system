@@ -1,38 +1,66 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Confirm Delete</title>
-    <link rel="stylesheet" href="{% static 'css/admin_dashboard.css' %}">
     <style>
-        /* Include your existing styles here */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h2 {
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+        p {
+            color: #555;
+            font-size: 16px;
+        }
+        form {
+            margin-top: 20px;
+        }
+        button {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #d32f2f;
+        }
+        a {
+            color: #2196F3;
+            text-decoration: none;
+            font-size: 16px;
+            margin-left: 10px;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Confirm Deletion</h1>
-        <nav>
-            <ul>
-                <li><a href="{% url 'admin_dashboard' %}">Dashboard</a></li>
-                <li><a href="{% url 'showtime_list' %}">Showtimes</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <div class="main-content">
-        <div class="confirm-container">
-            <h2>Are you sure you want to delete this Showtime?</h2>
-            <p>Showtime ID: {{ showtime.showtime_id }}</p>
-            <p>Time: {{ showtime.time }}</p>
-            <p>Show Amount: {{ showtime.show_amount }}</p>
-            <form method="post" action="{% url 'delete_showtime' showtime.showtime_id %}">
-                {% csrf_token %}
-                <button type="submit">Yes, Delete</button>
-                <a href="{% url 'showtime_list' %}">Cancel</a>
-            </form>
-        </div>
+    <div class="container">
+        <h2>Confirm Delete</h2>
+        <p>Are you sure you want to delete the showtime for "{{ showtime.movie.title }}" at "{{ showtime.theatre.name }}" on "{{ showtime.showtime|date:"F d, Y" }}" at "{{ showtime.showtime|time:"H:i" }}"?</p>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit">Confirm Delete</button>
+            <a href="{% url 'view_showtimes' %}">Cancel</a>
+        </form>
     </div>
 </body>
 </html>
